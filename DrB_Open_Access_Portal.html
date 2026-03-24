@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr B's Open Access Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --navy: #0d1f3c; --gold: #c9a84c; --cream: #faf8f3; --cream-dark: #f0ece0; --text: #1a1a2e; --text-muted: #5a5a72; --border: rgba(201,168,76,0.25); --card-bg: #ffffff; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+header { background: var(--navy); position: relative; overflow: hidden; }
+header::before { content:''; position:absolute; top:-60px; right:-60px; width:320px; height:320px; border-radius:50%; border:40px solid rgba(201,168,76,0.08); }
+.header-inner { max-width:960px; margin:0 auto; padding:48px 32px 40px; position:relative; z-index:1; display:flex; align-items:flex-start; gap:28px; }
+.header-badge { width:68px; height:68px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--navy); flex-shrink:0; }
+.header-text h1 { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,38px); font-weight:700; color:#fff; line-height:1.15; }
+.header-text h1 span { color:var(--gold); }
+.header-text p { margin-top:10px; font-size:14px; color:rgba(255,255,255,0.55); line-height:1.6; }
+.header-divider { width:44px; height:2px; background:var(--gold); margin:14px 0 0; border-radius:2px; }
+.controls-bar { background:var(--navy); border-top:1px solid rgba(255,255,255,0.07); }
+.controls-inner { max-width:960px; margin:0 auto; padding:14px 32px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.search-wrap { flex:1; min-width:180px; position:relative; }
+.search-wrap svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; stroke:rgba(255,255,255,0.4); }
+#search { width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:8px 12px 8px 36px; font-family:'DM Sans',sans-serif; font-size:14px; color:#fff; outline:none; }
+#search::placeholder { color:rgba(255,255,255,0.35); }
+#search:focus { border-color:var(--gold); }
+.filter-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.filter-btn { padding:7px 15px; border-radius:20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; border:1px solid rgba(255,255,255,0.18); background:transparent; color:rgba(255,255,255,0.6); transition:all 0.2s; }
+.filter-btn:hover { border-color:var(--gold); color:var(--gold); }
+.filter-btn.active { background:var(--gold); border-color:var(--gold); color:var(--navy); font-weight:600; }
+main { max-width:960px; margin:0 auto; padding:36px 32px 80px; }
+.section-label { font-size:11px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:20px; display:flex; justify-content:space-between; }
+.doc-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; }
+.doc-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px 22px; display:flex; flex-direction:column; gap:12px; transition:transform 0.18s, box-shadow 0.18s, border-color 0.18s; position:relative; overflow:hidden; }
+.doc-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--gold); opacity:0; transition:opacity 0.2s; }
+.doc-card:hover { transform:translateY(-3px); box-shadow:0 4px 24px rgba(13,31,60,0.1); border-color:var(--gold); }
+.doc-card:hover::before { opacity:1; }
+.doc-card-top { display:flex; align-items:flex-start; gap:12px; }
+.doc-icon { width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:20px; }
+.icon-pdf { background:#fff0ee; } .icon-xlsx { background:#edf7ee; } .icon-docx { background:#edf0ff; }
+.doc-info { flex:1; min-width:0; }
+.doc-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:600; color:var(--text); line-height:1.35; margin-bottom:4px; }
+.doc-desc { font-size:13px; color:var(--text-muted); line-height:1.5; }
+.doc-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--cream-dark); }
+.doc-tag { font-size:11px; font-weight:500; letter-spacing:0.5px; padding:3px 10px; border-radius:12px; text-transform:uppercase; }
+.tag-pdf { background:#fff0ee; color:#c0392b; } .tag-xlsx { background:#edf7ee; color:#27ae60; } .tag-docx { background:#edf0ff; color:#3d5af1; }
+.doc-link { display:inline-flex; align-items:center; gap:5px; font-size:13px; font-weight:500; color:var(--navy); text-decoration:none; padding:5px 13px; border-radius:20px; border:1px solid var(--border); transition:all 0.18s; }
+.doc-link:hover { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.doc-link svg { width:12px; height:12px; }
+footer { text-align:center; padding:24px; font-size:12px; color:var(--text-muted); border-top:1px solid var(--cream-dark); }
+</style>
+</head>
+<body>
+<header>
+<div class="header-inner">
+<div class="header-badge">Dr B</div>
+<div class="header-text">
+<h1>Dr B's <span>Open Access</span> Portal</h1>
+<div class="header-divider"></div>
+<p>A curated library of documents, spreadsheets, and resources — freely available for public access.</p>
+</div>
+</div>
+<div class="controls-bar"><div class="controls-inner">
+<div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="search" placeholder="Search documents…" oninput="filterDocs()"></div>
+<div class="filter-btns"><button class="filter-btn active" onclick="setFilter('all',this)">All</button><button class="filter-btn" onclick="setFilter('pdf',this)">PDF</button><button class="filter-btn" onclick="setFilter('xlsx',this)">Spreadsheet</button><button class="filter-btn" onclick="setFilter('docx',this)">Word Doc</button></div>
+</div></div></header>
+<main>
+<p class="section-label">Documents <span id="doc-count" style="font-size:13px;color:var(--text-muted);letter-spacing:0;text-transform:none;font-weight:400;">2 documents</span></p>
+<div class="doc-grid" id="doc-grid">
+<div class="doc-card" data-type="xlsx">
+  <div class="doc-card-top">
+    <div class="doc-icon icon-xlsx">📊</div>
+    <div class="doc-info">
+      <div class="doc-title">The TOP 101 Corrupt South Africans</div>
+      <div class="doc-desc"></div>
+    </div>
+  </div>
+  <div class="doc-card-footer">
+    <span class="doc-tag tag-xlsx">Spreadsheet</span>
+    <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1y0Tn7tDdVnKuY3eMWG_z03PQ9RNoeF0o/edit?usp=sharing&amp;ouid=113444265009309615217&amp;rtpof=true&amp;sd=true" target="_blank">View
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+  </div>
+</div>
+<div class="doc-card" data-type="pdf">
+  <div class="doc-card-top">
+    <div class="doc-icon icon-pdf">📄</div>
+    <div class="doc-info">
+      <div class="doc-title">The Case Against Extending Bargaining Council Agreements to Non-Parties.</div>
+      <div class="doc-desc"></div>
+    </div>
+  </div>
+  <div class="doc-card-footer">
+    <span class="doc-tag tag-pdf">PDF</span>
+    <a class="doc-link" href="https://docs.google.com/document/d/1CQ4d5UBpxFPqzAJSoXnRyLW6b5a2EtpP/edit?usp=sharing&amp;ouid=113444265009309615217&amp;rtpof=true&amp;sd=true" target="_blank">View
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+  </div>
+</div>
+</div>
+</main>
+<footer>&copy; 2026 Dr B's Open Access Portal &nbsp;·&nbsp; All documents are provided for public access</footer>
+<script>
+var activeFilter='all';
+function setFilter(t,b){activeFilter=t;document.querySelectorAll('.filter-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');filterDocs();}
+function filterDocs(){var q=document.getElementById('search').value.toLowerCase();var cards=document.querySelectorAll('.doc-card');var v=0;cards.forEach(function(c){var ok=(activeFilter==='all'||c.dataset.type===activeFilter)&&c.innerText.toLowerCase().includes(q);c.style.display=ok?'':' none';if(ok)v++;});document.getElementById('doc-count').textContent=v+' document'+(v!==1?'s':'');}
+filterDocs();
+</script>
+</body>
+</html>
